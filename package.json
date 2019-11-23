@@ -1,0 +1,28 @@
+{
+  "name": "SocialMediaQuest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "build": "node app.js",
+    "lite": "lite-server --port 80",
+    "start": "npm run lite"
+  },
+  "dependencies": {
+    "express": "4.17.1"
+  },
+  "devDependencies": {
+    "lite-server": "2.5.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/belguawhale/SocialMediaQuest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/belguawhale/SocialMediaQuest/issues"
+  },
+  "homepage": "https://github.com/belguawhale/SocialMediaQuest#readme"
+}
