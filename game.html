@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/styles.css">
+        <title>Social Media Quest!</title>
+    </head>
+    <body>
+        <h1>Social Media Quest</h1>
+        <div id="container">
+            <div id="display">
+                <p>Day <span id="days">0</span> of <span id="businessTitle">your side project</span></p>
+                <p>You have <span id="userAmount">0</span> users.</p>
+                <p>You have <span id="developerAmount">1</span> developers.</p>
+                <p>You have <span id="energyAmount">0</span>/<span id="energyLimit">2</span> developer days.</p>
+                <p>You have <span id="moneyAmount">0</span> money.</p>
+            </div>
+            <div id="tabs">
+                <button id="businessTabLink" class="tablinks" onClick="openTab(event, 'business')">Business</button>
+                <button class="tablinks" onClick="openTab(event, 'monetization')">Monetization</button>
+            </div>
+            <div id="businessTab" class="tabcontent active">
+                <button id="freeUsers" onClick="wordOfMouth()">Spread word of mouth (cost: 1 developer day)</button>
+                <button id="developers" onClick="hireDevelopers()">Convince your roommates to help (cost: 2 developer days)</button>
+            </div>
+            <div id="monetizationTab" class="tabcontent">
+                TODO
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="js/game.js"></script>
+    <script type="text/javascript" src="js/tabs.js"></script>
+</html>
