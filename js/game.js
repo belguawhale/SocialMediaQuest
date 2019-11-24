@@ -58,8 +58,6 @@ var upgradeCosts = {
 // var normalUpgrades = ["office1", "office2", "user2"];
 var normalUpgrades = Object.keys(upgradeCosts);
 
-// TODO: remove
-player.devMode = true;
 
 const NUM_ROOMMATES = 3;
 const NUM_RECRUITS = 7;
