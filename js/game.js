@@ -5,7 +5,7 @@ var player = {
     money: 500,
     energy: 0,
     employees: 1,
-    income: -1,
+    income: -10,
     upgrades: [],
     currentlyUpgrading: null,
 }
@@ -53,12 +53,20 @@ var upgradeCosts = {
         validate: false,
         income: 5,
     },
+    office2: {
+        validate: false,
+        income: 100,
+    },
     user1: {
         energy: 15,
     },
+    user2: {
+        validate: false,
+        income: 10,
+    },
 };
 
-var normalUpgrades = ["office1"];
+var normalUpgrades = ["office1", "office2", "user2"];
 
 // TODO: remove
 player.devMode = true;
@@ -202,28 +210,31 @@ function getEmployeeTimeProduction() {
     if (player.upgrades.includes("office1")) {
         timeIncome *= 1.5;
     }
+    if (player.upgrades.includes("office2")) {
+        timeIncome *= 1.5;
+    }
     return timeIncome;
 }
 
 function getIncome() {
     let income = player.income;
     if (player.upgrades.includes("mon1")) {
-        income += player.data / 10000;
+        income += player.data / 100000;
     }
     if (player.upgrades.includes("mon2")) {
-        income += player.data / 1000;
+        income += player.data / 10000;
     }
     if (player.upgrades.includes("platform12")) {
-        income += player.users / 500;
+        income += player.users / 5000;
     }
     if (player.upgrades.includes("partner2")) {
-        income += player.data / 750;
+        income += player.data / 7500;
     }
     if (player.upgrades.includes("mon3")) {
-        income += player.data / 500;
+        income += player.data / 5000;
     }
     if (player.upgrades.includes("partner3")) {
-        income += player.data / 250;
+        income += player.data / 2500;
     }
     return income;
 }
@@ -231,7 +242,7 @@ function getIncome() {
 function getUserProduction() {
     let userIncome = 0;
     if (player.upgrades.includes("user1")) {
-        userIncome += 0.1 * player.users;
+        userIncome += Math.min(0.1 * player.users, 1000);
     }
     if (player.upgrades.includes("platform12")) {
         userIncome += 1;
@@ -249,7 +260,7 @@ function getUserProduction() {
 }
 
 function getDataProduction() {
-    let dataIncome = player.users;
+    let dataIncome = player.users / 10;
     if (player.upgrades.includes("platform11")) {
         dataIncome *= 1.1;
     }
