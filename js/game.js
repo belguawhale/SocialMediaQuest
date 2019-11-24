@@ -36,7 +36,7 @@ var upgradeCosts = {
         energy: 85,
     },
     platform31: {
-        income: 50,
+        energy: 90,
     },
     platform32: {
         energy: 100,
@@ -224,22 +224,22 @@ function getEmployeeTimeProduction() {
 function getIncome() {
     let income = player.income;
     if (player.upgrades.includes("mon1")) {
-        income += Math.sqrt(player.data) / 30;
-    }
-    if (player.upgrades.includes("mon2")) {
         income += Math.sqrt(player.data) / 15;
     }
-    if (player.upgrades.includes("platform12")) {
-        income += Math.log(player.data) * 3;
-    }
-    if (player.upgrades.includes("partner2")) {
+    if (player.upgrades.includes("mon2")) {
         income += Math.sqrt(player.data) / 5;
     }
+    if (player.upgrades.includes("platform12")) {
+        income += Math.sqrt(player.data) / 20;
+    }
+    if (player.upgrades.includes("partner2")) {
+        income += Math.sqrt(player.data) / 15;
+    }
     if (player.upgrades.includes("mon3")) {
-        income += Math.sqrt(player.data) / 2;
+        income += Math.sqrt(player.data) / 15;
     }
     if (player.upgrades.includes("partner3")) {
-        income += Math.sqrt(player.data);
+        income += Math.sqrt(player.data) / 15;
     }
     return income;
 }
