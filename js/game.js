@@ -1,11 +1,12 @@
 var player = {
     ticks: 0,
-    users: 0,
+    users: 1,
+    servers: 1,
     data: 0,
-    money: 500,
+    money: 100,
     energy: 0,
     employees: 1,
-    income: -10,
+    income: 0,
     upgrades: [],
     currentlyUpgrading: null,
 }
@@ -14,65 +15,54 @@ var resources = ['money', 'energy', 'income'];
 
 var upgradeCosts = {
     mon1: {
-        energy: 20,
+        energy: 35,
     },
     mon2: {
-        energy: 40,
+        energy: 50,
     },
     mon3: {
-        energy: 100,
-    },
-    platform11: {
-        energy: 25,
-    },
-    platform12: {
-        energy: 40,
-    },
-    platform21: {
-        energy: 50,
-    },
-    platform22: {
-        energy: 65,
-    },
-    platform31: {
-        energy: 85,
-    },
-    platform32: {
-        energy: 125,
-    },
-    partner1: {
-        energy: 30,
-    },
-    partner2: {
-        energy: 50,
-    },
-    partner3: {
         energy: 70,
     },
-    office1: {
-        validate: false,
-        income: 5,
+    platform11: {
+        energy: 30,
     },
-    office2: {
-        validate: false,
-        income: 100,
+    platform12: {
+        energy: 50,
+    },
+    platform21: {
+        energy: 65,
+    },
+    platform22: {
+        energy: 85,
+    },
+    platform31: {
+        income: 50,
+    },
+    platform32: {
+        energy: 100,
+    },
+    partner1: {
+        energy: 35,
+    },
+    partner2: {
+        energy: 55,
+    },
+    partner3: {
+        energy: 75,
     },
     user1: {
         energy: 15,
     },
-    user2: {
-        validate: false,
-        income: 10,
-    },
 };
 
-var normalUpgrades = ["office1", "office2", "user2"];
+// var normalUpgrades = ["office1", "office2", "user2"];
+var normalUpgrades = Object.keys(upgradeCosts);
 
 // TODO: remove
 player.devMode = true;
 
 const NUM_ROOMMATES = 3;
-const NUM_RECRUITS = 3;
+const NUM_RECRUITS = 7;
 const TICKS_PER_DAY = 50;
 
 function wordOfMouth() {
@@ -88,12 +78,20 @@ function hireDevelopers() {
         if (player.energy >= requiredEnergy) {
             player.energy -= requiredEnergy;
             player.employees++;
+            player.users++;
         }
     }
     else {
         player.income -= getDeveloperCost();
         player.employees++;
+        player.users++;
     }
+    updateCostsUI();
+}
+
+function buyServer() {
+    player.income -= (player.servers + 1) / 2;
+    player.servers++;
     updateCostsUI();
 }
 
@@ -106,6 +104,8 @@ function tick() {
     player.money += getIncome() / TICKS_PER_DAY;
     player.data += getDataProduction() / TICKS_PER_DAY;
     player.users += getUserProduction() / TICKS_PER_DAY;
+    player.data = Math.min(player.data, getMaxData());
+    player.users = Math.min(player.users, getMaxUsers());
     if (player.currentlyUpgrading) {
         let energySpent = Math.min(player.energy, upgradeCosts[player.currentlyUpgrading].energy);
         player.energy -= energySpent;
@@ -113,7 +113,7 @@ function tick() {
         if (upgradeCosts[player.currentlyUpgrading].energy <= 0) {
             player.upgrades.push(player.currentlyUpgrading);
             document.getElementById(player.currentlyUpgrading).className += " upgradebtn--purchased";
-            completeEnergyUpgrade(player.currentlyUpgrading);
+            completeUpgrade(player.currentlyUpgrading);
             updateEnergyUpgradesUI();
             player.currentlyUpgrading = null;
         }
@@ -128,7 +128,10 @@ function tick() {
 function updateUI() {
     document.getElementById("days").innerText = (player.ticks / TICKS_PER_DAY).toFixed(1);
     document.getElementById("userAmount").innerText = player.users.toFixed(0);
+    document.getElementById("userLimit").innerText = getMaxUsers().toFixed(0);
     document.getElementById("dataAmount").innerText = player.data.toFixed(0);
+    document.getElementById("dataLimit").innerText = getMaxData().toFixed(0);
+    document.getElementById("serverAmount").innerText = player.servers.toFixed(0);
     document.getElementById("developerAmount").innerText = player.employees.toFixed(0);
     document.getElementById("energyAmount").innerText = player.energy.toFixed(1);
     document.getElementById("energyLimit").innerText = getMaxEnergy().toFixed(1);
@@ -160,6 +163,7 @@ function updateCostsUI() {
     else {
         document.getElementById("hireEmployees").innerText = `Convince your roommate to help (cost: ${getDeveloperCost().toFixed(0)} employee time)`;
     }
+    document.getElementById("servercost").innerText = ((player.servers + 1) / 2).toFixed(0);
 }
 
 function updateUpgradesUI() {
@@ -187,6 +191,7 @@ function buyUpgrade(thisElem) {
         subCost(player, cost);
         player.upgrades.push(name);
         thisElem.className += " upgradebtn--purchased";
+        completeUpgrade(name);
     }
 }
 
@@ -198,69 +203,73 @@ function buyEnergyUpgrade(thisElem) {
 }
 
 function getMaxEnergy() {
-    let timeCapacity = player.employees * 4 - 2;
-    if (player.upgrades.includes("office1")) {
-        timeCapacity *= 1.5;
-    }
+    let timeCapacity = player.employees * 5 - 3;
+    timeCapacity *= 1.15 ** (player.servers - 1);
     return timeCapacity;
+}
+
+function getMaxUsers() {
+    return 50 * 2 ** player.servers;
+}
+function getMaxData() {
+    return 100 * 2 ** player.servers;
 }
 
 function getEmployeeTimeProduction() {
     let timeIncome = player.employees;
-    if (player.upgrades.includes("office1")) {
-        timeIncome *= 1.5;
-    }
-    if (player.upgrades.includes("office2")) {
-        timeIncome *= 1.5;
-    }
+    timeIncome *= 1.25 ** (player.servers - 1);
     return timeIncome;
 }
 
 function getIncome() {
     let income = player.income;
     if (player.upgrades.includes("mon1")) {
-        income += player.data / 100000;
+        income += Math.sqrt(player.data) / 30;
     }
     if (player.upgrades.includes("mon2")) {
-        income += player.data / 10000;
+        income += Math.sqrt(player.data) / 15;
     }
     if (player.upgrades.includes("platform12")) {
-        income += player.users / 5000;
+        income += Math.log(player.data) * 3;
     }
     if (player.upgrades.includes("partner2")) {
-        income += player.data / 7500;
+        income += Math.sqrt(player.data) / 5;
     }
     if (player.upgrades.includes("mon3")) {
-        income += player.data / 5000;
+        income += Math.sqrt(player.data) / 2;
     }
     if (player.upgrades.includes("partner3")) {
-        income += player.data / 2500;
+        income += Math.sqrt(player.data);
     }
     return income;
 }
 
 function getUserProduction() {
     let userIncome = 0;
+    if (player.users > 20) {
+        userIncome = 5;
+    }
     if (player.upgrades.includes("user1")) {
-        userIncome += Math.min(0.1 * player.users, 1000);
+        userIncome += Math.min(0.05 * player.users, 1000);
     }
     if (player.upgrades.includes("platform12")) {
-        userIncome += 1;
+        userIncome += 5;
+        userIncome *= 1.5;
     }
     if (player.upgrades.includes("partner1")) {
         userIncome *= 3;
     }
     if (player.upgrades.includes("platform22")) {
-        userIncome += 0.025 * player.users;
+        userIncome += 0.05 * player.users;
     }
     if (player.upgrades.includes("platform32")) {
-        userIncome += 0.01 * player.users;
+        userIncome += 0.1 * player.users;
     }
     return userIncome;
 }
 
 function getDataProduction() {
-    let dataIncome = player.users / 10;
+    let dataIncome = player.users;
     if (player.upgrades.includes("platform11")) {
         dataIncome *= 1.1;
     }
@@ -283,7 +292,7 @@ function getDeveloperCost() {
     return 1.5 ** (player.employees - NUM_RECRUITS - 1);
 }
 
-function completeEnergyUpgrade(id) {
+function completeUpgrade(id) {
     switch (id) {
         case "mon1":
             document.getElementById("mon2").style.display = "block";
