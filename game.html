@@ -8,22 +8,60 @@
         <h1>Social Media Quest</h1>
         <div id="container">
             <div id="display">
-                <p>Day <span id="days">0</span> of <span id="businessTitle">your side project</span></p>
+                <p>Day <span id="days">0</span> of <span id="businessTitle">your social media company</span></p>
                 <p>You have <span id="userAmount">0</span> users.</p>
-                <p>You have <span id="developerAmount">1</span> developers.</p>
-                <p>You have <span id="energyAmount">0</span>/<span id="energyLimit">2</span> developer days.</p>
-                <p>You have <span id="moneyAmount">0</span> money.</p>
+                <p>You have <span id="developerAmount">1</span> employees.</p>
+                <p>You have <span id="energyAmount">0</span>/<span id="energyLimit">2</span> employee time.</p>
+                <p>You have <span id="moneyAmount">0</span> money. <span id="incomeDisplay">(<span id="incomeAmount">+0</span> money/day)</span></p>
             </div>
-            <div id="tabs">
+            <div class="tabs">
                 <button id="businessTabLink" class="tablinks" onClick="openTab(event, 'business')">Business</button>
-                <button class="tablinks" onClick="openTab(event, 'monetization')">Monetization</button>
+                <button id="monetizationTabLink" class="tablinks" onClick="openTab(event, 'monetization')" disabled="true">Monetization (unlocks at 20 users)</button>
+                <button id="devModeTabLink" class="tablinks" style="display: none" onClick="openTab(event, 'devMode')">Dev mode</button>
             </div>
-            <div id="businessTab" class="tabcontent active">
-                <button id="freeUsers" onClick="wordOfMouth()">Spread word of mouth (cost: 1 developer day)</button>
-                <button id="developers" onClick="hireDevelopers()">Convince your roommates to help (cost: 2 developer days)</button>
+            <div id="businessTab" class="tabcontent">
+                <table>
+                    <tr>
+                        <th scope="col">User Acquisition</th>
+                        <th scope="col">Office</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button id="freeUsers" class="upgradebtn" onClick="wordOfMouth()">Spread word of mouth (cost: 1 employee time)</button>
+                        </td>
+                        <td>
+                            <button id="hireEmployees" class="upgradebtn" onClick="hireDevelopers()">Convince your roommates to help (cost: 2 employee time)</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button id="office1" class="upgradebtn" onClick="buyUpgrade(this)">Rent a new office space</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="devModeTab" class="tabcontent">
+                <button onClick="player.users += 20">Get users</button>
+                <button onClick="player.money += 20">Get money</button>
+                <button onClick="player.employees += 1">Get employees</button>
+                <button onClick="updateCostsUI()">Update costs UI</button>
             </div>
             <div id="monetizationTab" class="tabcontent">
-                TODO
+                <table>
+                    <tr>
+                        <th scope="col">Advertising</th>
+                        <th scope="col"></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button id="mon11" class="upgradebtn" onClick="buyUpgrade(this)">Implement third-party advertisements (cost: 8 employee time)</button>
+                        </td>
+                        <td>
+                            <!-- <button id="mon12" class="upgradebtn" onClick="buyMonUpgrade(this, 16)">Implement third-party advertisements (cost: 8 employee time)</button> -->
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </body>

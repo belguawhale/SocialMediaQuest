@@ -1,34 +1,28 @@
-.tabs {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
+@import "tabs.css";
+
+.upgradebtn {
+  background: #E0E0E0;
+  font-weight: bold;
+  border: 2px solid #49CC80;
+  border-radius: 4px;
+  transition-duration: 0.2s;
 }
 
-/* Style the buttons that are used to open the tab content */
-.tabs button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
+.upgradebtn:enabled:not(.upgradebtn--purchased) {
+  color: #49CC80;
+}
+
+.upgradebtn:enabled:hover:not(.upgradebtn--purchased) {
+  color: #F0F0F0;
   cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
+  background: #29AC60;
+  border: 2px solid #29AC60;
 }
 
-/* Change background color of buttons on hover */
-.tabs button:hover {
-  background-color: #ddd;
-}
-
-/* Create an active/current tablink class */
-.tabs button.active {
-  background-color: #ccc;
-}
-
-/* Style the tab content */
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
+.upgradebtn--purchased {
+  color: #F0F0F0;
+  background: #49CC80;
+  font-weight: bold;
+  border: 2px solid #49CC80;
+  border-radius: 4px;
 }
