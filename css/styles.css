@@ -1,5 +1,9 @@
 @import "tabs.css";
 
+h1, p, button, th {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .upgradebtn {
   background: #E0E0E0;
   font-weight: bold;
@@ -25,4 +29,8 @@
   font-weight: bold;
   border: 2px solid #49CC80;
   border-radius: 4px;
+}
+
+.upgradecol {
+  width: 25%;
 }

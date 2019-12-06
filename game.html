@@ -5,7 +5,7 @@
         <title>Social Media Quest!</title>
     </head>
     <body>
-        <h1>Social Media Quest</h1>
+        <h1>social media quest</h1>
         <div id="container">
             <div id="display">
                 <p>Day <span id="days">0</span> of <span id="businessTitle">your social media company</span></p>
@@ -24,8 +24,9 @@
             <div id="businessTab" class="tabcontent">
                 <table>
                     <tr>
-                        <th scope="col">User Acquisition</th>
+                        <th scope="col">Employee Activities</th>
                         <th scope="col">Office</th>
+                        <th scope="col">User Acquisition</th>
                     </tr>
                     <tr>
                         <td>
@@ -34,13 +35,19 @@
                         <td>
                             <button id="hireEmployees" class="upgradebtn" onclick="hireDevelopers()">Convince your roommates to help (cost: 2 employee time)</button>
                         </td>
-                    </tr>
-                    <tr>
                         <td>
                             <button id="user1" class="upgradebtn" onclick="buyUpgrade(this)">Allow users to invite their friends and enable organic growth (cost: <span id="user1cost">15</span> employee time)</button>
                         </td>
+                    </tr>
+                    <tr>
                         <td>
-                            <button id="server" class="upgradebtn" onclick="buyServer()">Purchase a server for more computing power (cost: <span id="servercost">0</span> money/day)</button>
+                            <button id="freeMoney" class="upgradebtn" style="display:none" onclick="askForDonations()">Ask for donations (cost: <span id="donationsCost">20</span> employee time)</button>
+                        </td>
+                        <td>
+                            <button id="server" class="upgradebtn" style="display:none" onclick="buyServer()">Purchase a server for more computing power (cost: <span id="servercost">0</span> money/day)</button>
+                        </td>
+                        <td>
+                            <button id="user2" class="upgradebtn" style="display:none" onclick="buyUpgrade(this)">Scrape user contact lists to acquire more users (cost: <span id="user2cost">30</span> employee time)</button>
                         </td>
                     </tr>
                 </table>
@@ -55,43 +62,49 @@
                 <table>
                     <tr>
                         <th scope="col" style="width: 25%">Advertising</th>
-                        <th scope="col" style="width: 50%">Platform</th>
+                        <th scope="col" colspan="2" style="width: 50%">Platform</th>
                         <th scope="col" style="width: 25%">Partners</th>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="upgradecol">
                             <button id="mon1" class="upgradebtn" onclick="buyUpgrade(this)">Display third-party advertisements as a source of revenue (cost: <span id="mon1cost">35</span> employee time)</button>
                         </td>
-                        <td style="display:flex">
+                        <td class="upgradecol">
                             <button id="platform11" class="upgradebtn" onclick="buyUpgrade(this)">Implement engagement buttons to drive user interaction (cost: <span id="platform11cost">30</span> employee time)</button>
+                        </td>
+                        <td class="upgradecol">
                             <button id="platform12" class="upgradebtn" onclick="buyUpgrade(this)">Create premium currency to encourage digital economy (cost: <span id="platform12cost">50</span> employee time)</button>
                         </td>
-                        <td>
+                        <td class="upgradecol">
                             <button id="partner1" class="upgradebtn" onclick="buyUpgrade(this)">Partner with other social media networks to increase user base (cost: <span id="partner1cost">35</span> employee time)</button>
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <button id="mon2" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Deliver personalized ads based on user actions (cost: <span id="mon2cost">60</span> employee time)</button>
+                        <td class="upgradecol">
+                            <button id="mon2" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Deliver personalized ads based on user actions (cost: <span id="mon2cost">55</span> employee time)</button>
                         </td>
-                        <td style="display:flex">
+                        <td class="upgradecol">
                             <button id="platform21" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Develop chat features to increase user connectedness (cost: <span id="platform21cost">75</span> employee time)</button>
-                            <button id="platform22" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Implement paid community awards to foster connectedness (cost: <span id="platform22cost">95</span> employee time)</button>
                         </td>
-                        <td>
-                            <button id="partner2" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Give partners access to user data (cost: <span id="partner2cost">65</span> employee time)</button>
+                        <td class="upgradecol">
+                            <button id="platform22" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Implement paid community awards to foster a sense of community (cost: <span id="platform22cost">95</span> employee time)</button>
+                        </td>
+                        <td class="upgradecol">
+                            <button id="partner2" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Give partners paid access to user data (cost: <span id="partner2cost">65</span> employee time)</button>
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            <button id="mon3" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Promote political and controversial content to drive revenue sharply (cost: <span id="mon3cost">120</span> employee time)</button>
+                        <td class="upgradecol">
+                            <button id="mon3" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Promote political and controversial content to drive revenue sharply (cost: <span id="mon3cost">100</span> employee time)</button>
                         </td>
-                        <td style="display:flex">
+                        <td class="upgradecol">
                             <button id="platform31" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Hire addiction expert to increase user activity (cost: <span id="platform31cost">90</span> employee time)</button>
+                        </td>
+                        <td class="upgradecol">
                             <button id="platform32" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Sell physical goods and host events to increase brand awareness (cost: <span id="platform32cost">150</span> employee time)</button>
                         </td>
-                        <td>
-                            <button id="partner3" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Sell user data without user consent (cost: <span id="partner3cost">95</span> employee time)</button>
+                        <td class="upgradecol">
+                            <button id="partner3" style="display:none" class="upgradebtn" onclick="buyUpgrade(this)">Sell user data to third parties without user consent (cost: <span id="partner3cost">95</span> employee time)</button>
                         </td>
                     </tr>
                 </table>

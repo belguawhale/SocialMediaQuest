@@ -9,6 +9,7 @@ var player = {
     income: 0,
     upgrades: [],
     currentlyUpgrading: null,
+    numDonations: 0,
 }
 
 var resources = ['money', 'energy', 'income'];
@@ -18,10 +19,10 @@ var upgradeCosts = {
         energy: 35,
     },
     mon2: {
-        energy: 50,
+        energy: 65,
     },
     mon3: {
-        energy: 70,
+        energy: 120,
     },
     platform11: {
         energy: 30,
@@ -30,16 +31,16 @@ var upgradeCosts = {
         energy: 50,
     },
     platform21: {
-        energy: 65,
+        energy: 75,
     },
     platform22: {
-        energy: 85,
+        energy: 95,
     },
     platform31: {
         energy: 90,
     },
     platform32: {
-        energy: 100,
+        energy: 150,
     },
     partner1: {
         energy: 35,
@@ -48,10 +49,13 @@ var upgradeCosts = {
         energy: 55,
     },
     partner3: {
-        energy: 75,
+        energy: 85,
     },
     user1: {
         energy: 15,
+    },
+    user2: {
+        energy: 30,
     },
 };
 
@@ -61,13 +65,35 @@ var normalUpgrades = Object.keys(upgradeCosts);
 
 const NUM_ROOMMATES = 3;
 const NUM_RECRUITS = 7;
-const TICKS_PER_DAY = 50;
+const TICKS_PER_DAY = 25;
+const MS_PER_TICK = 200;
 
 function wordOfMouth() {
     if (player.energy >= 1) {
         player.energy--;
         player.users++;
     }
+    completeUpgrade("freeUsers");
+}
+
+function askForDonations() {
+    const energyCost = getDonationsCost();
+    if (player.energy >= energyCost) {
+        player.energy -= energyCost;
+        player.money += 10 + Math.sqrt(player.users - 10);
+        if (player.upgrades.includes("mon1")) {
+            player.numDonations++;
+        }
+    }
+    updateCostsUI();
+}
+
+function getDonationsCost() {
+    let energyCost = 20;
+    if (player.upgrades.includes("mon1")) {
+        energyCost += 1 * player.numDonations;
+    }
+    return energyCost;
 }
 
 function hireDevelopers() {
@@ -84,13 +110,19 @@ function hireDevelopers() {
         player.employees++;
         player.users++;
     }
+    completeUpgrade("hireEmployees");
     updateCostsUI();
 }
 
 function buyServer() {
-    player.income -= (player.servers + 1) / 2;
+    player.income -= getServerCost();
     player.servers++;
     updateCostsUI();
+}
+
+function getServerCost() {
+    return 2;
+    // return 2 ** (player.servers - 1);
 }
 
 function tick() {
@@ -153,7 +185,7 @@ function updateUI() {
 
 function updateCostsUI() {
     if (player.employees >= NUM_RECRUITS + 1) {
-        document.getElementById("hireEmployees").innerText = `Hire employees (cost: ${getDeveloperCost().toFixed(2)} money/day)`;
+        document.getElementById("hireEmployees").innerText = `Hire employees (cost: ${getDeveloperCost().toFixed(0)} money/day)`;
     }
     else if (player.employees >= NUM_ROOMMATES + 1) {
         document.getElementById("hireEmployees").innerText = `Recruit other people to help (cost: ${getDeveloperCost().toFixed(0)} employee time)`;
@@ -161,17 +193,20 @@ function updateCostsUI() {
     else {
         document.getElementById("hireEmployees").innerText = `Convince your roommate to help (cost: ${getDeveloperCost().toFixed(0)} employee time)`;
     }
-    document.getElementById("servercost").innerText = ((player.servers + 1) / 2).toFixed(0);
+    document.getElementById("servercost").innerText = getServerCost().toFixed(0);
+    document.getElementById("donationsCost").innerText = getDonationsCost().toFixed(0);
 }
 
 function updateUpgradesUI() {
     document.getElementById("freeUsers").disabled = player.energy < 1;
+    document.getElementById("freeMoney").disabled = player.energy < getDonationsCost();
     document.getElementById("hireEmployees").disabled = player.employees <= NUM_RECRUITS ?
         player.energy < getDeveloperCost() : false;
     normalUpgrades.forEach(id => {
         let cost = upgradeCosts[id];
         let skipValidate = cost.validate === false;
         document.getElementById(id).disabled = !skipValidate && !costGTE(player, cost);
+        document.getElementById(id + "cost").innerText = upgradeCosts[id].energy.toFixed(0);
     });
 }
 
@@ -201,21 +236,23 @@ function buyEnergyUpgrade(thisElem) {
 }
 
 function getMaxEnergy() {
-    let timeCapacity = player.employees * 5 - 3;
-    timeCapacity *= 1.15 ** (player.servers - 1);
+    let timeCapacity = player.employees * 4 - 2;
+    // timeCapacity *= 1.15 ** (player.servers - 1);
     return timeCapacity;
 }
 
 function getMaxUsers() {
-    return 50 * 2 ** player.servers;
+    return 100 * player.servers;
+    // return 50 * 2 ** player.servers;
 }
 function getMaxData() {
-    return 100 * 2 ** player.servers;
+    return 1000 * player.servers;
+    // return 500 * 2 ** player.servers;
 }
 
 function getEmployeeTimeProduction() {
-    let timeIncome = player.employees;
-    timeIncome *= 1.25 ** (player.servers - 1);
+    let timeIncome = player.employees * 0.75;
+    // timeIncome *= 1.25 ** (player.servers - 1);
     return timeIncome;
 }
 
@@ -225,7 +262,7 @@ function getIncome() {
         income += Math.sqrt(player.data) / 15;
     }
     if (player.upgrades.includes("mon2")) {
-        income += Math.sqrt(player.data) / 5;
+        income += Math.sqrt(player.data) / 10;
     }
     if (player.upgrades.includes("platform12")) {
         income += Math.sqrt(player.data) / 20;
@@ -234,10 +271,10 @@ function getIncome() {
         income += Math.sqrt(player.data) / 15;
     }
     if (player.upgrades.includes("mon3")) {
-        income += Math.sqrt(player.data) / 15;
+        income += Math.sqrt(player.data) / 5;
     }
     if (player.upgrades.includes("partner3")) {
-        income += Math.sqrt(player.data) / 15;
+        income += Math.sqrt(player.data) / 10;
     }
     return income;
 }
@@ -245,17 +282,19 @@ function getIncome() {
 function getUserProduction() {
     let userIncome = 0;
     if (player.users > 20) {
-        userIncome = 5;
+        userIncome = Math.log10(player.users);
     }
     if (player.upgrades.includes("user1")) {
-        userIncome += Math.min(0.05 * player.users, 1000);
+        userIncome += Math.min(0.05 * player.users, 10);
+    }
+    if (player.upgrades.includes("user2")) {
+        userIncome += 0.025 * player.users;
     }
     if (player.upgrades.includes("platform12")) {
-        userIncome += 5;
         userIncome *= 1.5;
     }
     if (player.upgrades.includes("partner1")) {
-        userIncome *= 3;
+        userIncome *= 1.25;
     }
     if (player.upgrades.includes("platform22")) {
         userIncome += 0.05 * player.users;
@@ -267,7 +306,7 @@ function getUserProduction() {
 }
 
 function getDataProduction() {
-    let dataIncome = player.users;
+    let dataIncome = player.users / 2;
     if (player.upgrades.includes("platform11")) {
         dataIncome *= 1.1;
     }
@@ -287,7 +326,7 @@ function getDeveloperCost() {
     else if (player.employees <= NUM_RECRUITS) {
         return (NUM_ROOMMATES + 1) * 1.5 ** (player.employees - NUM_ROOMMATES);
     }
-    return 1.5 ** (player.employees - NUM_RECRUITS - 1);
+    return 1;
 }
 
 function completeUpgrade(id) {
@@ -316,13 +355,26 @@ function completeUpgrade(id) {
         case "partner2":
             document.getElementById("partner3").style.display = "block";
             break;
+        case "user1":
+            document.getElementById("user2").style.display = "block";
+            break;
+        case "freeUsers":
+            if (player.users >= 10) {
+                document.getElementById("freeMoney").style.display = "block";
+            }
+            break;
+        case "hireEmployees":
+            if (player.employees > NUM_ROOMMATES) {
+                document.getElementById("server").style.display = "block";
+            }
+            break;
     }
 }
 
 function formatRate(value, decimals) {
     decimals = decimals || 0;
     let output = value.toFixed(decimals);
-    if (output >= 0) {
+    if (output > 0) {
         return `+${output}`;
     }
     return output;
@@ -347,4 +399,4 @@ function subCost(cost1, cost2) {
 
 updateCostsUI();
 
-var tickInterval = setInterval(tick, 100);
+var tickInterval = setInterval(tick, MS_PER_TICK);
