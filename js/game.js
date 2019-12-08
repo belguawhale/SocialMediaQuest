@@ -81,7 +81,7 @@ function askForDonations() {
     if (player.energy >= energyCost) {
         player.energy -= energyCost;
         player.money += 10 + Math.sqrt(player.users - 10);
-        if (player.upgrades.includes("mon1")) {
+        if (!isEthical()) {
             player.numDonations++;
         }
     }
@@ -90,10 +90,14 @@ function askForDonations() {
 
 function getDonationsCost() {
     let energyCost = 20;
-    if (player.upgrades.includes("mon1")) {
+    if (!isEthical()) {
         energyCost += 1 * player.numDonations;
     }
     return energyCost;
+}
+
+function isEthical() {
+    return !(player.upgrades.includes("mon1") || player.upgrades.includes("user2") || player.upgrades.includes("platform31") || player.upgrades.includes("partner1"));
 }
 
 function hireDevelopers() {
@@ -122,7 +126,6 @@ function buyServer() {
 
 function getServerCost() {
     return 2;
-    // return 2 ** (player.servers - 1);
 }
 
 function tick() {
@@ -171,8 +174,8 @@ function updateUI() {
     updateUpgradesUI();
     if (player.users >= 20) {
         let monetizationTab = document.getElementById("monetizationTabLink")
-        if (monetizationTab.innerText !== "Monetization") {
-            monetizationTab.innerText = "Monetization";
+        if (monetizationTab.innerText !== "Features") {
+            monetizationTab.innerText = "Features";
         }
         if (monetizationTab.disabled !== false) {
             monetizationTab.disabled = false;
@@ -237,22 +240,18 @@ function buyEnergyUpgrade(thisElem) {
 
 function getMaxEnergy() {
     let timeCapacity = player.employees * 4 - 2;
-    // timeCapacity *= 1.15 ** (player.servers - 1);
     return timeCapacity;
 }
 
 function getMaxUsers() {
     return 100 * player.servers;
-    // return 50 * 2 ** player.servers;
 }
 function getMaxData() {
     return 1000 * player.servers;
-    // return 500 * 2 ** player.servers;
 }
 
 function getEmployeeTimeProduction() {
     let timeIncome = player.employees * 0.75;
-    // timeIncome *= 1.25 ** (player.servers - 1);
     return timeIncome;
 }
 
@@ -267,11 +266,20 @@ function getIncome() {
     if (player.upgrades.includes("platform12")) {
         income += Math.sqrt(player.data) / 20;
     }
+    if (player.upgrades.includes("platform22")) {
+        income += Math.sqrt(player.data) / 30;
+    }
+    if (player.upgrades.includes("platform32")) {
+        income += Math.sqrt(player.data) / 10;
+    }
     if (player.upgrades.includes("partner2")) {
         income += Math.sqrt(player.data) / 15;
     }
     if (player.upgrades.includes("mon3")) {
         income += Math.sqrt(player.data) / 5;
+        if (player.upgrades.includes("platform31") && player.upgrades.includes("platform32")) {
+            income += (player.data ** 1.01) / 1000;
+        }
     }
     if (player.upgrades.includes("partner3")) {
         income += Math.sqrt(player.data) / 10;

@@ -1,6 +1,6 @@
 @import "tabs.css";
 
-h1, p, button, th {
+h1, h2, p, button, th {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
